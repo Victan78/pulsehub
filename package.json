@@ -8,6 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "dev": "tsx scripts/dev.ts",
     "hub": "tsx src/hub/main.ts",
     "dashboard": "vite",
     "sim": "tsx src/simulator/main.ts",

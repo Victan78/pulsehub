@@ -39,11 +39,12 @@ const tickTimer = setInterval(() => simulator.tick(), 1000 / options.hz);
 
 const statusTimer = setInterval(() => {
   const s = simulator.stats();
+  if (options.durationSec > 0 && s.elapsedSec >= options.durationSec) shutdown();
+  if (options.quiet) return;
   process.stdout.write(
     `\r${s.elapsedSec.toFixed(0)} s · ${s.framesGenerated} trames générées · ${s.datagramsSent} datagrammes envoyés` +
       ` · ${s.runningDevices} actifs · ${s.hotDevices} en surchauffe   `,
   );
-  if (options.durationSec > 0 && s.elapsedSec >= options.durationSec) shutdown();
 }, 1000);
 
 function shutdown(): void {

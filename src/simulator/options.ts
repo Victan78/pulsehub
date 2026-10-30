@@ -20,6 +20,8 @@ export interface SimulatorOptions {
   /** Durée totale de la simulation (0 = illimitée). */
   durationSec: number;
   seed: number | undefined;
+  /** Pas de ligne d'état chaque seconde */
+  quiet: boolean;
 }
 
 /** Préréglage `--chaos` : tous les défauts à la fois, à des taux visibles sur le tableau de bord. */
@@ -40,6 +42,7 @@ Réseau et flotte
   --heartbeat-every <n>    une trame sur n est un HEARTBEAT   (défaut 20, 0 = jamais)
   --duration <s>           arrêt automatique après s secondes (défaut 0 = jamais)
   --seed <n>               graine pour rejouer un scénario identique
+  --quiet                  n'affiche pas la ligne d'état chaque seconde
 
 Défauts (taux entre 0 et 1, appliqués à chaque trame)
   --bad-checksum <taux>    checksum faux
@@ -77,6 +80,7 @@ export function parseSimulatorOptions(argv: string[], env: NodeJS.ProcessEnv = {
       stop: { type: 'string' },
       'stop-after': { type: 'string' },
       chaos: { type: 'boolean', default: false },
+      quiet: { type: 'boolean', default: false },
       help: { type: 'boolean', default: false },
     },
   });
@@ -99,6 +103,7 @@ export function parseSimulatorOptions(argv: string[], env: NodeJS.ProcessEnv = {
     firstDeviceId,
     heartbeatEvery: parseNumber('--heartbeat-every', values['heartbeat-every'], 20, { min: 0, integer: true }),
     durationSec: parseNumber('--duration', values.duration, 0, { min: 0 }),
+    quiet: values.quiet,
     seed: values.seed === undefined ? undefined : parseNumber('--seed', values.seed, 0, { integer: true }),
     faults: {
       badChecksum: parseNumber('--bad-checksum', values['bad-checksum'], preset.faults.badChecksum, RATE_RULE),
