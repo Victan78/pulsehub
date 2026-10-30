@@ -1,20 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { METRIC_NAMES, type MetricName } from './metrics';
-import type { Severity } from './snapshot';
+import type { AlertRule } from './snapshot';
 
-/**
- * Règle d'alerte déclarative : « metric au-dessus / en dessous de threshold pendant forMs ».
- * forMs = 0 : alerte immédiate (valeur anormale ponctuelle).
- */
-export interface AlertRule {
-  id: string;
-  label: string;
-  metric: MetricName;
-  condition: 'above' | 'below';
-  threshold: number;
-  forMs: number;
-  severity: Severity;
-}
+export type { AlertRule };
 
 /** Lit et valide le fichier de règles. Une règle mal formée arrête le hub au démarrage. */
 export function loadAlertRules(path: string): AlertRule[] {
@@ -43,6 +31,9 @@ export function parseAlertRules(raw: unknown, source = 'règles'): AlertRule[] {
     if (typeof r.forMs !== 'number' || r.forMs < 0) throw new Error(`${where} : "forMs" doit être ≥ 0`);
     if (r.severity !== 'warning' && r.severity !== 'critical') {
       throw new Error(`${where} : "severity" doit valoir warning ou critical`);
+    }
+    if (r.advice !== undefined && typeof r.advice !== 'string') {
+      throw new Error(`${where} : "advice" doit être un texte`);
     }
     ids.add(r.id);
     return r as AlertRule;

@@ -25,12 +25,14 @@ export const EMPTY_SNAPSHOT: HubSnapshot = {
   fleet: {
     total: 0,
     byStatus: { ok: 0, warning: 0, critical: 0, offline: 0 },
+    anomalies: 0,
     maxTemperature: null,
     averageTemperature: null,
   },
   devices: [],
   alerts: [],
   events: [],
+  rules: [],
 };
 
 /** S'abonne à la synthèse publiée par le hub et se reconnecte tout seul si le hub redémarre. */

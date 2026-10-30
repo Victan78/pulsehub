@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AlertEngine } from '../../../src/hub/synthesis/alert-engine';
-import { parseAlertRules, type AlertRule } from '../../../src/hub/synthesis/alert-rules';
+import { loadAlertRules, parseAlertRules, type AlertRule } from '../../../src/hub/synthesis/alert-rules';
 
 const OVERHEAT: AlertRule = {
   id: 'overheat',
@@ -70,13 +70,18 @@ describe('AlertEngine', () => {
 });
 
 describe('parseAlertRules', () => {
-  it('accepte le fichier livré', () => {
-    expect(parseAlertRules({ rules: [OVERHEAT, UNDERVOLTAGE] })).toHaveLength(2);
+  it('accepte des règles valides, avec ou sans consigne', () => {
+    expect(parseAlertRules({ rules: [OVERHEAT, { ...UNDERVOLTAGE, advice: 'Vérifier l’alimentation.' }] })).toHaveLength(2);
+  });
+
+  it('accepte le fichier de règles livré dans config/', () => {
+    expect(loadAlertRules('config/alert-rules.json').length).toBeGreaterThan(0);
   });
 
   it('refuse une règle mal formée avec un message qui dit laquelle', () => {
     expect(() => parseAlertRules({ rules: [{ ...OVERHEAT, metric: 'humidity' }] })).toThrow(/règle n°1.*metric/);
     expect(() => parseAlertRules({ rules: [OVERHEAT, OVERHEAT] })).toThrow(/en double/);
     expect(() => parseAlertRules({})).toThrow(/rules/);
+    expect(() => parseAlertRules({ rules: [{ ...OVERHEAT, advice: 42 }] })).toThrow(/advice/);
   });
 });
