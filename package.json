@@ -8,6 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "hub": "tsx src/hub/main.ts",
     "sim": "tsx src/simulator/main.ts",
     "test": "vitest run",
     "test:watch": "vitest",

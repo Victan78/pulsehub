@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+
 /** Valeurs par défaut partagées entre le hub et le simulateur (surchargées par env ou CLI). */
 export const DEFAULT_UDP_PORT = 9000;
 
@@ -26,3 +28,7 @@ export function parseNumber(name: string, raw: string | undefined, fallback: num
 export const PORT_RULE: NumberRule = { min: 1, max: 65535, integer: true };
 export const RATE_RULE: NumberRule = { min: 0, max: 1 };
 
+/** Charge un éventuel fichier .env local (jamais versionné) sans écraser l'environnement. */
+export function loadDotEnv(path = '.env'): void {
+  if (existsSync(path)) process.loadEnvFile(path);
+}
