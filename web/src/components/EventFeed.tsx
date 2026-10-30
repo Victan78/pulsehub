@@ -7,9 +7,9 @@ const LEVEL_ICON = { info: 'ℹ', warning: '▲', critical: '✕' } as const;
 export function EventFeed({ events }: { events: HubEvent[] }) {
   return (
     <section className="panel events" aria-labelledby="events-title">
-      <h2 id="events-title">Journal</h2>
+      <h2 id="events-title">Ce qui s'est passé</h2>
       {events.length === 0 ? (
-        <p className="empty">Aucun événement.</p>
+        <p className="empty">Rien à signaler pour l'instant.</p>
       ) : (
         <ol className="event-list">
           {events.map((event, i) => (

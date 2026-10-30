@@ -6,6 +6,7 @@ const percent = new Intl.NumberFormat('fr-FR', { style: 'percent', maximumFracti
 
 export const formatInt = (value: number) => integer.format(value);
 export const formatPercent = (value: number) => percent.format(value);
+export const formatDecimal = (value: number | null) => (value === null ? '—' : oneDecimal.format(value));
 
 export function formatValue(value: number | null, unit: string): string {
   return value === null ? '—' : `${oneDecimal.format(value)} ${unit}`;
@@ -28,19 +29,23 @@ export function formatClock(timestamp: number): string {
 /** Libellé + icône : un statut ne repose jamais sur la seule couleur. */
 export const STATUS_LABEL: Record<DeviceStatus, { icon: string; label: string }> = {
   ok: { icon: '✓', label: 'OK' },
-  warning: { icon: '▲', label: 'Attention' },
-  critical: { icon: '✕', label: 'Critique' },
-  offline: { icon: '○', label: 'Hors ligne' },
+  warning: { icon: '▲', label: 'À surveiller' },
+  critical: { icon: '✕', label: 'Danger' },
+  offline: { icon: '○', label: 'Ne répond plus' },
 };
 
+/** Illustration 3D de la machine dans chaque état (fichiers dans web/public/devices). */
+export const deviceImage = (status: DeviceStatus) => `/devices/${status}.png`;
+
+/** Motifs de rejet en langage courant (le code technique reste visible au survol). */
 export const DECODE_ERROR_LABEL: Record<string, string> = {
-  TOO_SHORT: 'Trop courte',
-  TOO_LONG: 'Trop longue',
-  BAD_MAGIC: 'Magic invalide',
-  BAD_VERSION: 'Version inconnue',
-  LENGTH_MISMATCH: 'Longueur incohérente',
-  BAD_CHECKSUM: 'Checksum faux',
-  UNKNOWN_TYPE: 'Type inconnu',
-  BAD_DEVICE_ID: 'deviceId invalide',
-  HEARTBEAT_WITH_MEASUREMENTS: 'Heartbeat avec mesures',
+  TOO_SHORT: 'message incomplet',
+  TOO_LONG: 'message trop long',
+  BAD_MAGIC: 'pas un message PulseHub',
+  BAD_VERSION: 'version inconnue',
+  LENGTH_MISMATCH: 'taille incohérente',
+  BAD_CHECKSUM: 'contenu abîmé',
+  UNKNOWN_TYPE: 'type inconnu',
+  BAD_DEVICE_ID: 'appareil inconnu',
+  HEARTBEAT_WITH_MEASUREMENTS: 'signal de vie mal formé',
 };

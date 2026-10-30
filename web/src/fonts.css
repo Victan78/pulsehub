@@ -1,0 +1,5 @@
+/* Polices embarquées dans le build : la régie n'a pas forcément accès à Internet. */
+@import '@fontsource/big-shoulders-display/700';
+@import '@fontsource/big-shoulders-display/900';
+@import '@fontsource/ibm-plex-mono/400';
+@import '@fontsource/ibm-plex-mono/600';
