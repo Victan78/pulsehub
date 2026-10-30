@@ -1,0 +1,21 @@
+{
+  "name": "pulsehub",
+  "version": "0.1.0",
+  "description": "Hub de supervision temps réel d'équipements scéniques (protocole PulseHub v1 sur UDP)",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

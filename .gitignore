@@ -1,0 +1,15 @@
+# dépendances et artefacts de build
+node_modules/
+dist/
+coverage/
+
+# configuration locale et secrets
+.env
+.env.*
+!.env.example
+
+# divers
+*.log
+.DS_Store
+.vscode/
+.idea/
