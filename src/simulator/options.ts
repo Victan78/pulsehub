@@ -24,7 +24,7 @@ export interface SimulatorOptions {
 
 /** Préréglage `--chaos` : tous les défauts à la fois, à des taux visibles sur le tableau de bord. */
 const CHAOS = {
-  faults: { badChecksum: 0.01, duplicate: 0.01, reorder: 0.01, drop: 0.005, anomaly: 0.002 },
+  faults: { badChecksum: 0.01, duplicate: 0.01, reorder: 0.01, drop: 0.005, anomaly: 0.0005 },
   hot: 2,
   stop: 2,
 };
