@@ -14,7 +14,7 @@ npm run dev -- --chaos     # avec tous les défauts injectés
 ```
 
 Lancement séparé : `npm run hub`, `npm run dashboard`, `npm run sim` (options : `npm run sim -- --help`).
-Tests : `npm test` · types : `npm run typecheck`.
+Tests : `npm test` · types : `npm run typecheck` · lint : `npm run lint`. La CI (GitHub Actions) lance les quatre vérifications à chaque push, sous Node 22 et 26.
 Configuration : variables d'environnement ([.env.example](.env.example)) et règles d'alerte ([config/alert-rules.json](config/alert-rules.json)).
 
 **Tester un défaut :** au démarrage tout est à zéro, puis par exemple :
@@ -68,9 +68,9 @@ Interface web choisie car lisible par toute l'équipe et rapide à faire évolue
 
 ## 5. Choix et compromis
 
-- **Outils :** TypeScript + tsx (lance le `.ts` sans étape de build), vitest (tests rapides sans configuration), ws (WebSocket minimal), React + Vite (composants et démarrage en une commande), Fontsource (polices embarquées, la régie peut être hors ligne). UDP, CLI et binaire avec les modules natifs de Node (`dgram`, `parseArgs`, `Buffer`). Écartés : NestJS et Socket.IO (trop lourds pour un seul flux), Grafana (installation trop longue pour la journée), une interface terminal (moins lisible pour 50 appareils).
+- **Outils :** TypeScript + tsx (lance le `.ts` sans étape de build), vitest (tests rapides sans configuration), ws (WebSocket minimal), React + Vite (composants et démarrage en une commande), Fontsource (polices embarquées, la régie peut être hors ligne), oxlint (lint TypeScript et React sans dépendre du compilateur : ESLint via typescript-eslint ne gère pas encore TypeScript 7). UDP, CLI et binaire avec les modules natifs de Node (`dgram`, `parseArgs`, `Buffer`). Écartés : NestJS et Socket.IO (trop lourds pour un seul flux), Grafana (installation trop longue pour la journée), une interface terminal (moins lisible pour 50 appareils).
 - **Pertes :** comptées par appareil à partir des trous de `seq`. Une trame arrivée après une plus récente est écartée et déjà comptée comme perdue.
-- **Bonus faits :** alertes avec durée, retour à zéro de `seq` et redémarrage d'appareil, seuils d'alerte en JSON.
+- **Bonus faits :** alertes avec durée, retour à zéro de `seq` et redémarrage d'appareil, seuils d'alerte en JSON, intégration continue (lint, types, tests, build).
 - **Simplifié :** synthèse en mémoire uniquement ; seules les règles d'alerte sont configurables, pas toute la chaîne de traitement.
 
 ## 6. Limites connues
@@ -79,11 +79,8 @@ Interface web choisie car lisible par toute l'équipe et rapide à faire évolue
 - Le protocole ne donne pas le type d'appareil : tous ont les mêmes règles.
 - Un redémarrage dans les 5 premières secondes de fonctionnement n'est pas détecté.
 - Débit maximal du hub non mesuré ; le simulateur envoie environ 950 trames/s au lieu de 1 000 (cadence par `setInterval`).
-- Pas d'intégration continue.
-
 ## 7. Usage de l'IA
 
-- **Claude Code** (Claude Opus 5.5) : aide à challenger l'architecture et aux tests
+- **Claude Code** : aide à challenger l'architecture et aux tests
 - **gpt-image-2.5** (via Replicate) : les 4 illustrations 3D des appareils.
 
-Chaque commit a été relu et testé 
