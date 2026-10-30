@@ -15,13 +15,15 @@ import { WsPublisher } from './ws-publisher';
 /** Racine de composition : c'est le seul endroit qui instancie et relie les composants. */
 function createHub(config: HubConfig): Hub {
   const events = new EventLog(config.eventLogSize);
-  const alerts = new AlertEngine(loadAlertRules(config.alertRulesFile));
+  const rules = loadAlertRules(config.alertRulesFile);
+  const alerts = new AlertEngine(rules);
   return new Hub({
     sequencer: new Sequencer({ restartToleranceMs: config.restartToleranceMs }),
     reception: new ReceptionStats(),
     fleet: new Fleet({ offlineAfterMs: config.offlineAfterMs }, alerts, events),
     events,
     throughput: new ThroughputMeter(config.throughputWindowMs),
+    rules,
     now: Date.now,
   });
 }

@@ -7,6 +7,23 @@ import type { MetricName } from './metrics';
 
 export type Severity = 'warning' | 'critical';
 
+/**
+ * Règle d'alerte déclarative : « metric au-dessus / en dessous de threshold pendant forMs ».
+ * forMs = 0 : alerte immédiate (valeur anormale ponctuelle). Publiée telle quelle au tableau de bord,
+ * qui en tire les limites à dessiner sur les jauges sans les recopier.
+ */
+export interface AlertRule {
+  id: string;
+  label: string;
+  metric: MetricName;
+  condition: 'above' | 'below';
+  threshold: number;
+  forMs: number;
+  severity: Severity;
+  /** Consigne affichée à la régie : quoi vérifier quand l'alerte se déclenche. */
+  advice?: string;
+}
+
 export type DeviceStatus = 'ok' | 'warning' | 'critical' | 'offline';
 export type EventLevel = 'info' | Severity;
 
@@ -38,6 +55,8 @@ export interface AlertView {
   value: number;
   threshold: number;
   breachSince: number;
+  /** Consigne issue de la règle (quoi vérifier), null si la règle n'en donne pas. */
+  advice: string | null;
 }
 
 export interface DeviceView {
@@ -60,6 +79,8 @@ export interface DeviceView {
 export interface FleetView {
   total: number;
   byStatus: Record<DeviceStatus, number>;
+  /** Valeurs hors limites détectées sur une seule mesure (règles sans durée : 0 V, 120 °C…). */
+  anomalies: number;
   maxTemperature: { deviceId: number; value: number } | null;
   averageTemperature: number | null;
 }
@@ -79,4 +100,5 @@ export interface HubSnapshot {
   devices: DeviceView[];
   alerts: AlertView[];
   events: HubEvent[];
+  rules: AlertRule[];
 }

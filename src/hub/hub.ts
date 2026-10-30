@@ -1,4 +1,5 @@
 import { decodeFrame } from '../protocol/decoder';
+import type { AlertRule } from './synthesis/alert-rules';
 import type { EventLog } from './synthesis/event-log';
 import { summarizeFleet, type Fleet } from './synthesis/fleet';
 import type { ReceptionStats } from './synthesis/reception-stats';
@@ -12,6 +13,8 @@ export interface HubDeps {
   fleet: Fleet;
   events: EventLog;
   throughput: ThroughputMeter;
+  /** Règles en vigueur, publiées pour que le tableau de bord dessine les limites. */
+  rules: AlertRule[];
   now: () => number;
 }
 
@@ -51,10 +54,11 @@ export class Hub {
       generatedAt: now,
       hubStartedAt: this.startedAt,
       reception: reception.view(throughput.sample(now, reception.datagramCount())),
-      fleet: summarizeFleet(devices),
+      fleet: summarizeFleet(devices, fleet.anomalyCount()),
       devices,
       alerts: devices.flatMap((d) => (d.status === 'offline' ? [] : d.alerts)),
       events: events.recent(),
+      rules: this.deps.rules,
     };
   }
 }

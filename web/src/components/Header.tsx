@@ -1,10 +1,10 @@
 import type { HubSnapshot } from '../../../src/hub/synthesis/snapshot';
 import { formatClock, formatDuration } from '../format';
-import type { ConnectionState } from '../useHubSnapshot';
+import type { ConnectionState } from '../hub-state';
 
 const CONNECTION_LABEL: Record<ConnectionState, string> = {
   connecting: 'Connexion au hub…',
-  open: 'Hub connecté',
+  open: 'Connecté au hub',
   closed: 'Hub injoignable, nouvelle tentative…',
 };
 
@@ -18,12 +18,12 @@ export function Header({ connection, snapshot }: { connection: ConnectionState; 
           ◉
         </span>
         <h1>PulseHub</h1>
-        <span className="brand-sub">Supervision de la flotte</span>
+        <span className="brand-sub">Surveillance du matériel scénique</span>
       </div>
       <div className="header-meta">
         {live && (
           <span>
-            Hub actif depuis {formatDuration(snapshot.generatedAt - snapshot.hubStartedAt)} · mis à jour à{' '}
+            En marche depuis {formatDuration(snapshot.generatedAt - snapshot.hubStartedAt)} · mis à jour à{' '}
             {formatClock(snapshot.generatedAt)}
           </span>
         )}

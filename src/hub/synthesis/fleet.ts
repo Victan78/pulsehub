@@ -36,6 +36,7 @@ export class Fleet {
   private readonly alerts: AlertEngine;
   private readonly events: EventLog;
   private readonly devices = new Map<number, DeviceRecord>();
+  private anomalies = 0;
 
   constructor(options: FleetOptions, alerts: AlertEngine, events: EventLog) {
     this.options = options;
@@ -87,6 +88,14 @@ export class Fleet {
     }
   }
 
+  /**
+   * Nombre de valeurs anormales vues depuis le démarrage : alertes levées par une règle sans durée.
+   * Un pic d'une seule trame retombe en 50 ms ; ce compteur garde la trace qu'il a eu lieu.
+   */
+  anomalyCount(): number {
+    return this.anomalies;
+  }
+
   deviceViews(): DeviceView[] {
     return [...this.devices.values()]
       .sort((a, b) => a.deviceId - b.deviceId)
@@ -133,6 +142,7 @@ export class Fleet {
   private logAlert(deviceId: number, transition: AlertTransition, now: number): void {
     if (transition.type !== 'raised') return;
     const { rule, value } = transition.alert;
+    if (rule.forMs === 0) this.anomalies++;
     const unit = UNITS[rule.metric];
     const duration = rule.forMs > 0 ? ` depuis ${rule.forMs / 1000} s` : '';
     this.log(
@@ -149,7 +159,7 @@ export class Fleet {
 }
 
 /** Synthèse globale à partir des vues appareil (fonction pure, testée isolément). */
-export function summarizeFleet(devices: DeviceView[]): FleetView {
+export function summarizeFleet(devices: DeviceView[], anomalies: number): FleetView {
   const byStatus: Record<DeviceStatus, number> = { ok: 0, warning: 0, critical: 0, offline: 0 };
   let maxTemperature: FleetView['maxTemperature'] = null;
   let temperatureSum = 0;
@@ -168,6 +178,7 @@ export function summarizeFleet(devices: DeviceView[]): FleetView {
   return {
     total: devices.length,
     byStatus,
+    anomalies,
     maxTemperature,
     averageTemperature: temperatureCount === 0 ? null : temperatureSum / temperatureCount,
   };
@@ -190,5 +201,6 @@ function toAlertView(deviceId: number, alert: ActiveAlert): AlertView {
     value: alert.value,
     threshold: alert.rule.threshold,
     breachSince: alert.breachSince,
+    advice: alert.rule.advice ?? null,
   };
 }

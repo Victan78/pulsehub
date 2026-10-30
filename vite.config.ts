@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     root: 'web',
+    clearScreen: false, // garde visibles les logs du hub quand tout tourne via npm run dev
     plugins: [react()],
     server: {
       port: Number(env.PULSEHUB_DASHBOARD_PORT || 5173),

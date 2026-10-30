@@ -63,6 +63,23 @@ describe('Fleet', () => {
     ]);
   });
 
+  it('compte les valeurs anormales ponctuelles (règle sans durée), même si l’alerte retombe aussitôt', () => {
+    const events = new EventLog(10);
+    const alerts = new AlertEngine([
+      { id: 'undervoltage', label: 'Sous-tension', metric: 'voltage', condition: 'below', threshold: 22, forMs: 0, severity: 'critical' },
+      { id: 'overheat', label: 'Surchauffe', metric: 'temperature', condition: 'above', threshold: 70, forMs: 3000, severity: 'critical' },
+    ]);
+    const fleet = new Fleet({ offlineAfterMs: 2000 }, alerts, events);
+    const spike: Frame = { ...telemetry(1, 2, 4000), measurements: [{ metricId: MetricId.VOLTAGE, value: 0 }] };
+
+    fleet.record(telemetry(1, 1, 4000), { kind: 'first' }, 0);
+    fleet.record(spike, { kind: 'next', lost: 0 }, 50);
+    fleet.record(telemetry(1, 3, 4000), { kind: 'next', lost: 0 }, 100);
+    for (let t = 150; t <= 3500; t += 50) fleet.record(telemetry(1, t / 50 + 1, 7500), { kind: 'next', lost: 0 }, t);
+
+    expect(fleet.anomalyCount()).toBe(1);
+  });
+
   it('un doublon ou une trame en retard ne met pas à jour les valeurs', () => {
     const { fleet } = setup();
     fleet.record(telemetry(1, 5, 4000), { kind: 'first' }, 0);
@@ -78,16 +95,17 @@ describe('summarizeFleet', () => {
     ({ deviceId, status, temperature }) as DeviceView;
 
   it('est vide au démarrage', () => {
-    expect(summarizeFleet([])).toEqual({
+    expect(summarizeFleet([], 0)).toEqual({
       total: 0,
       byStatus: { ok: 0, warning: 0, critical: 0, offline: 0 },
+      anomalies: 0,
       maxTemperature: null,
       averageTemperature: null,
     });
   });
 
   it('compte par statut et ignore la dernière valeur connue des appareils hors ligne', () => {
-    const summary = summarizeFleet([view(1, 'ok', 40), view(2, 'critical', 80), view(3, 'offline', 95), view(4, 'ok', 30)]);
+    const summary = summarizeFleet([view(1, 'ok', 40), view(2, 'critical', 80), view(3, 'offline', 95), view(4, 'ok', 30)], 0);
 
     expect(summary.byStatus).toEqual({ ok: 2, warning: 0, critical: 1, offline: 1 });
     expect(summary.maxTemperature).toEqual({ deviceId: 2, value: 80 });

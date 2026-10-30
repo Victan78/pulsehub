@@ -18,6 +18,7 @@ function createHub() {
     fleet: new Fleet({ offlineAfterMs: 2000 }, new AlertEngine([]), events),
     events,
     throughput: new ThroughputMeter(2000),
+    rules: [],
     now: () => now,
   });
   return { hub, advance: (ms: number) => (now += ms) };

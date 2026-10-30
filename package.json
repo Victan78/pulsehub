@@ -8,6 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "dev": "tsx scripts/dev.ts",
     "hub": "tsx src/hub/main.ts",
     "dashboard": "vite",
     "sim": "tsx src/simulator/main.ts",
@@ -15,11 +16,6 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit && tsc --noEmit -p web",
     "build:web": "vite build"
-  },
-  "dependencies": {
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "ws": "^8.22.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
@@ -31,5 +27,12 @@
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@fontsource/big-shoulders-display": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "ws": "^8.22.0"
   }
 }

@@ -7,7 +7,8 @@
       "condition": "above",
       "threshold": 70,
       "forMs": 3000,
-      "severity": "critical"
+      "severity": "critical",
+      "advice": "Vérifier la ventilation et réduire la charge de l'appareil."
     },
     {
       "id": "hot",
@@ -16,7 +17,8 @@
       "condition": "above",
       "threshold": 60,
       "forMs": 1000,
-      "severity": "warning"
+      "severity": "warning",
+      "advice": "Surveiller : vérifier que rien ne gêne la ventilation."
     },
     {
       "id": "temperature-implausible",
@@ -25,7 +27,8 @@
       "condition": "below",
       "threshold": -10,
       "forMs": 0,
-      "severity": "warning"
+      "severity": "warning",
+      "advice": "Valeur improbable : vérifier le capteur de température."
     },
     {
       "id": "undervoltage",
@@ -34,7 +37,8 @@
       "condition": "below",
       "threshold": 22,
       "forMs": 0,
-      "severity": "critical"
+      "severity": "critical",
+      "advice": "Vérifier l'alimentation et le câble secteur."
     },
     {
       "id": "overvoltage",
@@ -43,7 +47,8 @@
       "condition": "above",
       "threshold": 26,
       "forMs": 0,
-      "severity": "critical"
+      "severity": "critical",
+      "advice": "Couper l'appareil et faire vérifier l'alimentation."
     },
     {
       "id": "overcurrent",
@@ -52,7 +57,8 @@
       "condition": "above",
       "threshold": 10,
       "forMs": 0,
-      "severity": "warning"
+      "severity": "warning",
+      "advice": "Vérifier ce qui est branché : consommation anormale."
     }
   ]
 }
