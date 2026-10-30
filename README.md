@@ -3,6 +3,8 @@
 Hub de supervision temps réel d'équipements scéniques qui émettent leur télémétrie en UDP (protocole PulseHub v1),
 avec un simulateur de flotte et un tableau de bord web.
 
+**Auteur :** Salamatao Mohamed ([@Victan78](https://github.com/Victan78)) · **Dépôt :** https://github.com/Victan78/pulsehub
+
 ## 1. Démarrage local
 
 Prérequis : Node.js 22 ou plus récent, npm 10 ou plus récent.
