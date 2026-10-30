@@ -1,0 +1,58 @@
+{
+  "rules": [
+    {
+      "id": "overheat",
+      "label": "Surchauffe",
+      "metric": "temperature",
+      "condition": "above",
+      "threshold": 70,
+      "forMs": 3000,
+      "severity": "critical"
+    },
+    {
+      "id": "hot",
+      "label": "Température élevée",
+      "metric": "temperature",
+      "condition": "above",
+      "threshold": 60,
+      "forMs": 1000,
+      "severity": "warning"
+    },
+    {
+      "id": "temperature-implausible",
+      "label": "Température aberrante",
+      "metric": "temperature",
+      "condition": "below",
+      "threshold": -10,
+      "forMs": 0,
+      "severity": "warning"
+    },
+    {
+      "id": "undervoltage",
+      "label": "Sous-tension",
+      "metric": "voltage",
+      "condition": "below",
+      "threshold": 22,
+      "forMs": 0,
+      "severity": "critical"
+    },
+    {
+      "id": "overvoltage",
+      "label": "Surtension",
+      "metric": "voltage",
+      "condition": "above",
+      "threshold": 26,
+      "forMs": 0,
+      "severity": "critical"
+    },
+    {
+      "id": "overcurrent",
+      "label": "Surintensité",
+      "metric": "current",
+      "condition": "above",
+      "threshold": 10,
+      "forMs": 0,
+      "severity": "warning"
+    }
+  ]
+}
