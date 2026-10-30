@@ -8,6 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "sim": "tsx src/simulator/main.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
