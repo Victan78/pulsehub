@@ -7,8 +7,10 @@ import { loadAlertRules } from './synthesis/alert-rules';
 import { EventLog } from './synthesis/event-log';
 import { Fleet } from './synthesis/fleet';
 import { ReceptionStats } from './synthesis/reception-stats';
+import type { HubSnapshot } from './synthesis/snapshot';
 import { ThroughputMeter } from './synthesis/throughput';
 import { UdpReceiver } from './udp-receiver';
+import { WsPublisher } from './ws-publisher';
 
 /** Racine de composition : c'est le seul endroit qui instancie et relie les composants. */
 function createHub(config: HubConfig): Hub {
@@ -32,23 +34,19 @@ async function main(): Promise<void> {
   const receiver = new UdpReceiver({ host: config.udpHost, port: config.udpPort }, (datagram) =>
     hub.handleDatagram(datagram),
   );
-  const address = await receiver.start();
-  console.log(`PulseHub : réception UDP sur ${address.address}:${address.port}`);
+  const publisher = new WsPublisher<HubSnapshot>(
+    { port: config.wsPort, intervalMs: config.publishIntervalMs },
+    () => hub.snapshot(),
+  );
 
-  // Affichage provisoire de la synthèse, en attendant le tableau de bord.
-  const statusTimer = setInterval(() => {
-    const { reception: r, fleet: f } = hub.snapshot();
-    process.stdout.write(
-      `\r${Math.round(r.framesPerSec)} trames/s · reçues ${r.datagrams} · invalides ${r.invalid} · perdues ${r.lost}` +
-        ` · doublons ${r.duplicates} · retards ${r.late} · appareils ${f.total}` +
-        ` (critiques ${f.byStatus.critical}, hors ligne ${f.byStatus.offline})   `,
-    );
-  }, config.publishIntervalMs);
+  const address = await receiver.start();
+  await publisher.start();
+  console.log(`PulseHub : réception UDP sur ${address.address}:${address.port}`);
+  console.log(`PulseHub : synthèse publiée sur ws://localhost:${config.wsPort} toutes les ${config.publishIntervalMs} ms`);
 
   const shutdown = async () => {
-    clearInterval(statusTimer);
-    await receiver.stop();
-    console.log('\nHub arrêté.');
+    await Promise.all([receiver.stop(), publisher.stop()]);
+    console.log('Hub arrêté.');
   };
   process.once('SIGINT', shutdown);
   process.once('SIGTERM', shutdown);

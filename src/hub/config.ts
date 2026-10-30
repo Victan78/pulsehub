@@ -3,7 +3,8 @@ import { DEFAULT_UDP_PORT, PORT_RULE, parseNumber } from '../shared/config';
 export interface HubConfig {
   udpHost: string;
   udpPort: number;
-  /** Période de calcul et d'affichage de la synthèse. */
+  wsPort: number;
+  /** Période de publication de la synthèse vers le tableau de bord. */
   publishIntervalMs: number;
   offlineAfterMs: number;
   restartToleranceMs: number;
@@ -19,6 +20,7 @@ export function loadHubConfig(env: NodeJS.ProcessEnv): HubConfig {
   return {
     udpHost: env.PULSEHUB_UDP_HOST || '0.0.0.0',
     udpPort: parseNumber('PULSEHUB_UDP_PORT', env.PULSEHUB_UDP_PORT, DEFAULT_UDP_PORT, PORT_RULE),
+    wsPort: parseNumber('PULSEHUB_WS_PORT', env.PULSEHUB_WS_PORT, 8080, PORT_RULE),
     publishIntervalMs: parseNumber('PULSEHUB_PUBLISH_INTERVAL_MS', env.PULSEHUB_PUBLISH_INTERVAL_MS, 250, DURATION_RULE),
     offlineAfterMs: parseNumber('PULSEHUB_OFFLINE_AFTER_MS', env.PULSEHUB_OFFLINE_AFTER_MS, 2000, DURATION_RULE),
     restartToleranceMs: parseNumber(
